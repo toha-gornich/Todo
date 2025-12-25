@@ -116,16 +116,6 @@ let testProvider = CoreDataProvider(inMemory: true)
 
 This ensures tests run quickly without affecting persistent data.
 
-## Future Enhancements
-
-Potential features for future development:
-- [ ] Task priorities
-- [ ] Due dates and reminders
-- [ ] Categories/tags
-- [ ] Search functionality
-- [ ] Task notes/descriptions
-- [ ] Dark mode optimization
-- [ ] iCloud sync
 
 ## License
 
