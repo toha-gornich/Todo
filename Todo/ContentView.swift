@@ -46,6 +46,15 @@ struct ContentView: View {
         }
     }
     
+    private func deleteTodoItem(_ todoItem: TodoItem){
+        context.delete(todoItem)
+        do{
+            try context.save()
+        }catch{
+            print(error)
+        }
+    }
+    
     var body: some View {
         //        NavigationView {
         VStack{
@@ -66,9 +75,13 @@ struct ContentView: View {
                     }else{
                         ForEach(pendingTodoItems){ todoItem in
                             TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
-                        }
+                        }.onDelete(perform: {indexSet in
+                            indexSet.forEach{ index in
+                                let todoItem = pendingTodoItems[index]
+                                deleteTodoItem(todoItem)
+                            }
+                        })
                     }
-                    
                 }
                 
                 Section("Completed"){
@@ -77,7 +90,12 @@ struct ContentView: View {
                     }else{
                         ForEach(completedTodoItems){ todoItem in
                             TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
-                        }
+                        }.onDelete(perform: {indexSet in
+                            indexSet.forEach{ index in
+                                let todoItem = pendingTodoItems[index]
+                                deleteTodoItem(todoItem)
+                            }
+                        })
                     }
                     
                     
@@ -97,6 +115,7 @@ struct TodoCellView: View {
     
     let todoItem: TodoItem
     let onChanged: (TodoItem) -> Void
+    
     
     var body: some View {
         HStack{
