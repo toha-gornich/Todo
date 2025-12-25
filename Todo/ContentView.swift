@@ -47,35 +47,47 @@ struct ContentView: View {
     }
     
     var body: some View {
-//        NavigationView {
-            VStack{
-                TextField("Title", text: $title)
-                    .textFieldStyle(.roundedBorder)
-                    .onSubmit {
-                        if isFormValid{
-                            saveTodoItem()
-                            title = ""
-                        }
+        //        NavigationView {
+        VStack{
+            TextField("Title", text: $title)
+                .textFieldStyle(.roundedBorder)
+                .onSubmit {
+                    if isFormValid{
+                        saveTodoItem()
+                        title = ""
                     }
-                List{
+                }
+            List{
+                
+                Section("Pending"){
                     
-                    Section("Pending"){
+                    if pendingTodoItems.isEmpty{
+                        ContentUnavailableView("No items found", systemImage: "doc")
+                    }else{
                         ForEach(pendingTodoItems){ todoItem in
                             TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
                         }
                     }
                     
-                    Section("Completed"){
+                }
+                
+                Section("Completed"){
+                    if completedTodoItems.isEmpty{
+                        ContentUnavailableView("No items found", systemImage: "doc")
+                    }else{
                         ForEach(completedTodoItems){ todoItem in
                             TodoCellView(todoItem: todoItem, onChanged: updateTodoItem)
                         }
                     }
                     
-                }.listStyle(.plain)
+                    
+                }
                 
-                Spacer()
-            }
-//        }
+            }.listStyle(.plain)
+            
+            Spacer()
+        }
+        //        }
         .padding()
         .navigationTitle("Todo")
     }
@@ -93,7 +105,16 @@ struct TodoCellView: View {
                     todoItem.isCompleted = !todoItem.isCompleted
                     onChanged(todoItem)
                 }
-            Text(todoItem.title ?? "")
+            if todoItem.isCompleted {
+                Text(todoItem.title ?? "")
+            }else {
+                TextField("", text: Binding(get: {todoItem.title ?? ""
+                },set: {newValue in
+                    todoItem.title = newValue
+                })).onSubmit {
+                    onChanged(todoItem)
+                }
+            }
         }
     }
 }
